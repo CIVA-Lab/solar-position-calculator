@@ -10,6 +10,7 @@ class SolarPositionCalculation {
 		int day;
 	public:
 		SolarPositionCalculation(int year, int month, int day);
+		SolarPositionCalculation();
 		double calcTimeJulianCent(double jd);
 		double calcJDFromJulianCent(double t);
 		bool isLeapYear(int year);

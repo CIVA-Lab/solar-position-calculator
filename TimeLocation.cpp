@@ -2,10 +2,11 @@
 #include "SolarPositionCalculation.h"
 
 double TimeLocation::calcSolNoon(double jd, double longitude, double timezone) {
-	double tnoon = calcTimeJulianCent(jd - longitude/360.0);
+	SolarPositionCalculation *spc = new SolarPositionCalculation();
+	double tnoon = spc->calcTimeJulianCent(jd - longitude/360.0);
 	double eqTime = calcEquationOfTime(tnoon);
 	double solNoonOffset = 720.0 - (longitude * 4) - eqTime; // in minutes
-	double newt = SolarPositionCalculation::calcTimeJulianCent(jd + solNoonOffset/1440.0);
+	double newt = spc->calcTimeJulianCent(jd + solNoonOffset/1440.0);
 	eqTime = calcEquationOfTime(newt);
 	double solNoonLocal = 720 - (longitude * 4) - eqTime + (timezone*60.0); // in minutes
 	while (solNoonLocal < 0.0) {
@@ -20,11 +21,13 @@ double TimeLocation::calcSolNoon(double jd, double longitude, double timezone) {
 
 
 double TimeLocation::calcSunriseSetUTC(double rise, double JD, double latitude, double longitude) {
-	double t = calcTimeJulianCent(JD);
+	SolarPositionCalculation *spc = new SolarPositionCalculation();
+	double t = spc->calcTimeJulianCent(JD);
 	double eqTime = calcEquationOfTime(t);
 	double solarDec = calcSunDeclination(t);
 	double hourAngle = calcHourAngleSunrise(latitude, solarDec);
-	if (!rise) hourAngle = -hourAngle;
+	if (!rise) 
+		hourAngle = -hourAngle;
 	double delta = longitude + radToDeg(hourAngle);
 	double timeUTC = 720 - (4.0 * delta) - eqTime;	// in minutes
 
@@ -42,14 +45,16 @@ double TimeLocation::calcSunriseSet(double rise, double JD, double latitude, dou
 	double timeUTC = calcSunriseSetUTC(rise, JD, latitude, longitude);
 	double newTimeUTC = calcSunriseSetUTC(rise, JD + timeUTC/1440.0, latitude, longitude); 
 	double jday;
+	double azimuth;
+	SolarPositionCalculation *spc = new SolarPositionCalculation();
 	if (isNumber(newTimeUTC)) {
 		double timeLocal = newTimeUTC + (timezone * 60.0);
-		double riseT = calcTimeJulianCent(JD + newTimeUTC/1440.0);
+		double riseT = spc->calcTimeJulianCent(JD + newTimeUTC/1440.0);
 		
-		double riseAzEl = calcAzEl(riseT, timeLocal, latitude, longitude, timezone); // See TODO #1, change data type of 'riseAzEl' and return type of calcAzEl()
+		AzimuthElevation *riseAzEl = calcAzEl(riseT, timeLocal, latitude, longitude, timezone); // See TODO #1, change data type of 'riseAzEl' and return type of calcAzEl()
 		
 		//double azimuth = riseAzEl.azimuth;
-		double azimut = riseAzEl // See TODO #1
+		azimuth = riseAzEl->getAzimuth(); // See TODO #1
 		jday = JD;
 		if ( (timeLocal < 0.0) || (timeLocal >= 1440.0) ) {
 			double increment = ((timeLocal < 0) ? 1 : -1);
@@ -60,10 +65,10 @@ double TimeLocation::calcSunriseSet(double rise, double JD, double latitude, dou
 		}
 
 	} else { // no sunrise/set found
-
-		double azimuth = -1.0;
+		
+		azimuth = -1.0;
 		double timeLocal = 0.0;
-		double doy = calcDoyFromJD(JD);
+		double doy = spc->calcDoyFromJD(JD);
 		if ( ((latitude > 66.4) && (doy > 79) && (doy < 267)) ||
 		     ((latitude < -66.4) && ((doy < 83) || (doy > 263))) ) {
 			//previous sunrise/next sunset
@@ -221,9 +226,9 @@ double TimeLocation::calcHourAngleSunrise(double lat, double solarDec) {
 	return HA; // in radians (for sunset, use -HA)
 }
 
-bool TimeLocation::isNumber(string inputVal) {
+bool TimeLocation::isNumber(std::string inputVal) {
 	bool oneDecimal = false;
-	string inputStr = "" + inputVal;
+	std::string inputStr = "" + inputVal;
 	for (int i = 0; i < inputStr.length(); i++) {
 		char oneChar = inputStr.at(i);
 		if (i == 0 && (oneChar == '-' || oneChar == '+')) {
@@ -260,7 +265,7 @@ double TimeLocation::calcRefraction(double elev) {
 /** 
 	TODO: Define a class for azimuth an elevation, and change return type of function. For now keep as double.
 */
-double TimeLocation::calcAzEl(double T, double localtime, double latitude, double longitude, double zone) {
+AzimuthElevation* TimeLocation::calcAzEl(double T, double localtime, double latitude, double longitude, double zone) {
 
 	double eqTime = calcEquationOfTime(T);
 	double theta  = calcSunDeclination(T);
@@ -318,6 +323,9 @@ double TimeLocation::calcAzEl(double T, double localtime, double latitude, doubl
 	double solarZen = zenith - refractionCorrection;
 	double elevation = 90.0 - solarZen;
 
+	AzimuthElevation *azimuth_elevation = new AzimuthElevation(azimuth, elevation);
+
+
 	//return {"azimuth": azimuth, "elevation": elevation}
-	return 0.0;
+	return azimuth_elevation;
 }

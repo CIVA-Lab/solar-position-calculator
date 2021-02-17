@@ -2,6 +2,10 @@
 //#include "JulianDate.h"
 //#include "Date.h"
 
+SolarPositionCalculation::SolarPositionCalculation() {
+
+}
+
 SolarPositionCalculation::SolarPositionCalculation(int year, int month, int day) {
 	this->year = year;
 	this->day = day;

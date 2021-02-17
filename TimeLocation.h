@@ -1,5 +1,6 @@
 #include <iostream>
 #include <cmath>
+#include "AzimuthElevation.h"
 //#include <string>
 
 #define PI 3.141593
@@ -29,7 +30,7 @@ class TimeLocation {
 	double calcSunRtAscension(double t);
 	double calcSunDeclination(double t);
 	double calcHourAngleSunrise(double lat, double solarDec);
-	bool isNumber(string inputVal);
+	bool isNumber(std::string inputVal);
 	double calcRefraction(double elev);
-	double calcAzEl(double T, double localtime, double latitude, double longitude, double zone);
+	AzimuthElevation* calcAzEl(double T, double localtime, double latitude, double longitude, double zone);
 };
