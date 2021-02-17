@@ -14,8 +14,8 @@ class SolarPositionCalculation {
 		double calcJDFromJulianCent(double t);
 		bool isLeapYear(int year);
 		Date calcDateFromJD(double jd);
-		
 		double calcDoyFromJD(double jd);
+		double getJD(int year, int month, int day);
 		
 		int getYear();
 		int getMonth();
