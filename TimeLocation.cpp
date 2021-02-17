@@ -35,10 +35,6 @@ double TimeLocation::calcSunriseSetUTC(double rise, double JD, double latitude, 
 }
 
 
-/**
-	TODO #1: Change return type to a time, location abstract data type.
-	'azimuth' needs to be a member for the ADT.
-*/
 // rise = 1 for sunrise, 0 for sunset
 double TimeLocation::calcSunriseSet(double rise, double JD, double latitude, double longitude, double timezone) {
 
@@ -51,7 +47,7 @@ double TimeLocation::calcSunriseSet(double rise, double JD, double latitude, dou
 		double timeLocal = newTimeUTC + (timezone * 60.0);
 		double riseT = spc->calcTimeJulianCent(JD + newTimeUTC/1440.0);
 		
-		AzimuthElevation *riseAzEl = calcAzEl(riseT, timeLocal, latitude, longitude, timezone); // See TODO #1, change data type of 'riseAzEl' and return type of calcAzEl()
+		AzimuthElevation *riseAzEl = calcAzEl(riseT, timeLocal, latitude, longitude, timezone);
 		
 		//double azimuth = riseAzEl.azimuth;
 		azimuth = riseAzEl->getAzimuth(); // See TODO #1
@@ -262,9 +258,7 @@ double TimeLocation::calcRefraction(double elev) {
 	}
 	return correction;
 }
-/** 
-	TODO: Define a class for azimuth an elevation, and change return type of function. For now keep as double.
-*/
+
 AzimuthElevation* TimeLocation::calcAzEl(double T, double localtime, double latitude, double longitude, double zone) {
 
 	double eqTime = calcEquationOfTime(T);
