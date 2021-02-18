@@ -1,19 +1,20 @@
 #include <iostream>
 #include <cmath>
 #include "AzimuthElevation.h"
-//#include <string>
-
 #define PI 3.141593
+
+using namespace std;
 
 class TimeLocation {
 	private:
 	
 	public:
+	TimeLocation();
 	double calcSolNoon(double jd, double longitude, double timezone);
-	double calcSunriseSetUTC(double rise, double JD, double latitude, double longitude);
+	double calcSunriseSetUTC(bool rise, double JD, double latitude, double longitude);
 	// rise = 1 for sunrise, 0 for sunset
-	double calcSunriseSet(double rise, double JD, double latitude, double longitude, double timezone);
-	double calcJDofNextPrevRiseSet(double next, double rise, double JD, double latitude, double longitude, double tz);
+	double calcSunriseSet(bool rise, double JD, double latitude, double longitude, double timezone);
+	double calcJDofNextPrevRiseSet(double next, bool rise, double JD, double latitude, double longitude, double tz);
 	double calcEquationOfTime(double t);
 	double radToDeg(double angleRad);
 	double degToRad(double angleDeg);
@@ -30,7 +31,8 @@ class TimeLocation {
 	double calcSunRtAscension(double t);
 	double calcSunDeclination(double t);
 	double calcHourAngleSunrise(double lat, double solarDec);
-	bool isNumber(std::string inputVal);
+	bool isNumber(string inputVal);
 	double calcRefraction(double elev);
+	double calcTimeInMinutes(int hours, int mins, int secs);
 	AzimuthElevation* calcAzEl(double T, double localtime, double latitude, double longitude, double zone);
 };

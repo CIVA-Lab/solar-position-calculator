@@ -1,6 +1,11 @@
 #include "TimeLocation.h"
 #include "SolarPositionCalculation.h"
 
+TimeLocation::TimeLocation() { 
+
+}
+
+
 double TimeLocation::calcSolNoon(double jd, double longitude, double timezone) {
 	SolarPositionCalculation *spc = new SolarPositionCalculation();
 	double tnoon = spc->calcTimeJulianCent(jd - longitude/360.0);
@@ -20,7 +25,7 @@ double TimeLocation::calcSolNoon(double jd, double longitude, double timezone) {
 }
 
 
-double TimeLocation::calcSunriseSetUTC(double rise, double JD, double latitude, double longitude) {
+double TimeLocation::calcSunriseSetUTC(bool rise, double JD, double latitude, double longitude) {
 	SolarPositionCalculation *spc = new SolarPositionCalculation();
 	double t = spc->calcTimeJulianCent(JD);
 	double eqTime = calcEquationOfTime(t);
@@ -36,21 +41,21 @@ double TimeLocation::calcSunriseSetUTC(double rise, double JD, double latitude, 
 
 
 // rise = 1 for sunrise, 0 for sunset
-double TimeLocation::calcSunriseSet(double rise, double JD, double latitude, double longitude, double timezone) {
+double TimeLocation::calcSunriseSet(bool rise, double JD, double latitude, double longitude, double timezone) {
 
 	double timeUTC = calcSunriseSetUTC(rise, JD, latitude, longitude);
 	double newTimeUTC = calcSunriseSetUTC(rise, JD + timeUTC/1440.0, latitude, longitude); 
 	double jday;
 	double azimuth;
 	SolarPositionCalculation *spc = new SolarPositionCalculation();
-	if (isNumber(newTimeUTC)) {
+	if (isNumber(to_string(newTimeUTC))) {
 		double timeLocal = newTimeUTC + (timezone * 60.0);
 		double riseT = spc->calcTimeJulianCent(JD + newTimeUTC/1440.0);
 		
-		AzimuthElevation *riseAzEl = calcAzEl(riseT, timeLocal, latitude, longitude, timezone);
+		AzimuthElevation riseAzEl = *calcAzEl(riseT, timeLocal, latitude, longitude, timezone);
 		
 		//double azimuth = riseAzEl.azimuth;
-		azimuth = riseAzEl->getAzimuth(); // See TODO #1
+		azimuth = riseAzEl.getAzimuth(); // See TODO #1
 		jday = JD;
 		if ( (timeLocal < 0.0) || (timeLocal >= 1440.0) ) {
 			double increment = ((timeLocal < 0) ? 1 : -1);
@@ -78,13 +83,13 @@ double TimeLocation::calcSunriseSet(double rise, double JD, double latitude, dou
 	return 0.0;
 }
 
-double TimeLocation::calcJDofNextPrevRiseSet(double next, double rise, double JD, double latitude, double longitude, double tz) {
+double TimeLocation::calcJDofNextPrevRiseSet(double next, bool rise, double JD, double latitude, double longitude, double tz) {
 
 	double julianday = JD;
 	double increment = ((next) ? 1.0 : -1.0);
 	double time = calcSunriseSetUTC(rise, julianday, latitude, longitude);
 
-	while(!isNumber(time)) {
+	while(!isNumber(to_string(time))) {
 		julianday += increment;
 		time = calcSunriseSetUTC(rise, julianday, latitude, longitude);
 	}
@@ -222,7 +227,7 @@ double TimeLocation::calcHourAngleSunrise(double lat, double solarDec) {
 	return HA; // in radians (for sunset, use -HA)
 }
 
-bool TimeLocation::isNumber(std::string inputVal) {
+bool TimeLocation::isNumber(string inputVal) {
 	bool oneDecimal = false;
 	std::string inputStr = "" + inputVal;
 	for (int i = 0; i < inputStr.length(); i++) {
@@ -319,7 +324,12 @@ AzimuthElevation* TimeLocation::calcAzEl(double T, double localtime, double lati
 
 	AzimuthElevation *azimuth_elevation = new AzimuthElevation(azimuth, elevation);
 
+	cout << "Azimuth: " << azimuth << ", Elevation: " << elevation << endl;
 
 	//return {"azimuth": azimuth, "elevation": elevation}
 	return azimuth_elevation;
+}
+
+double TimeLocation::calcTimeInMinutes(int hours, int mins, int secs) {
+	return (hours*60) + mins + (secs/60.0);
 }

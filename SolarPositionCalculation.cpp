@@ -58,7 +58,7 @@ double SolarPositionCalculation::calcDoyFromJD(double jd) {
 	return doy;
 }
 
-double SolarPositionCalculation::getJD(int year, int month, int day) {
+double SolarPositionCalculation::getJD() {
 	if (month <= 2) {
 		year -= 1;
 		month += 12;

@@ -1,5 +1,7 @@
 #include<iostream>
 
+using namespace std;
+
 class AzimuthElevation {
 	private:
 		double azimuth;
