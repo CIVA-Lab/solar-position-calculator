@@ -1,7 +1,6 @@
 #include <iostream>
 #include <math.h>
 #include "Date.h"
-#include "JulianDate.h"
 
 class SolarPositionCalculation {
 	private:

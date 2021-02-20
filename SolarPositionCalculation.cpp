@@ -1,6 +1,4 @@
 #include "SolarPositionCalculation.h"
-//#include "JulianDate.h"
-//#include "Date.h"
 
 SolarPositionCalculation::SolarPositionCalculation() {
 
