@@ -324,9 +324,7 @@ AzimuthElevation* TimeLocation::calcAzEl(double T, double localtime, double lati
 
 	AzimuthElevation *azimuth_elevation = new AzimuthElevation(azimuth, elevation);
 
-	cout << "Azimuth: " << azimuth << ", Elevation: " << elevation << endl;
-
-	//return {"azimuth": azimuth, "elevation": elevation}
+	//cout << "Azimuth: " << azimuth << ", Elevation: " << elevation << endl;
 	return azimuth_elevation;
 }
 
