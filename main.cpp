@@ -1,32 +1,62 @@
 #include "SolarPositionCalculation.h"
 #include "TimeLocation.h"
+#include <unistd.h>
+#include <ctype.h>
 
+int main(int argc, char *argv[])  {
 
-int main(int argc, char *argv[]) {
-	
 	TimeLocation *tl = new TimeLocation();
-	
-	int year = atoi(argv[1]);
-	int month = atoi(argv[2]);
-	int day = atoi(argv[3]);
-	double longtitude = atof(argv[4]);
-	double latitude = atof(argv[5]);
-	string time_zone_offset = argv[6];
-	
-	int hours = atoi(argv[7]);
-	int minutes = atoi(argv[8]);
-	int seconds = atoi(argv[9]);
-	minutes = tl->calcTimeInMinutes(hours, minutes, seconds);
-		
-	string delimiter = ":";
-	string tz_hour = time_zone_offset.substr(0, time_zone_offset.find(delimiter));
-	string tz_min = time_zone_offset.substr(time_zone_offset.find(delimiter)+1, time_zone_offset.length());
-	
-	double tz_hour_d = atof(tz_hour.c_str());
-	double tz_min_d = atof(tz_min.c_str())/60.0;
-	
-	tz_hour_d = tz_hour_d + tz_min_d;
 
+	int year, month, day, hours, minutes, seconds;
+	int c;
+	double longtitude, latitude, tz_hour_d, tz_min_d;
+	string time_zone_offset, time, tz_hour, tz_min;
+	string delimiter = ":";
+
+	while((c = getopt(argc, argv, "y:m:d:o:a:u:t:")) != -1) {
+		switch(c) {
+			case 'y':
+				year = atoi(optarg);
+				break;
+			case 'm':
+				month = atoi(optarg);
+				break;
+			case 'd':
+				day = atoi(optarg);
+				break;
+			case 'o':
+				longtitude = atof(optarg);
+				break;
+			case 'a':
+				latitude = atof(optarg);
+				break;
+			case 'u':
+				time_zone_offset = optarg;
+				tz_hour = time_zone_offset.substr(0, time_zone_offset.find(delimiter));
+				tz_min = time_zone_offset.substr(time_zone_offset.find(delimiter)+1, time_zone_offset.length());
+
+				tz_hour_d = atof(tz_hour.c_str());
+				tz_min_d = atof(tz_min.c_str())/60.0;
+
+				tz_hour_d = tz_hour_d + tz_min_d;
+				break;
+			case 't':
+				time = optarg;
+
+				hours = atoi(time.substr(0, time.find(delimiter)).c_str());
+				time = time.substr(time.find(delimiter)+1, time.length());
+
+				minutes = atoi(time.substr(0, time.find(delimiter)).c_str());
+				time = time.substr(time.find(delimiter)+1, time.length());
+
+				seconds = atoi(time.substr(0, time.length()).c_str());
+				minutes = tl->calcTimeInMinutes(hours, minutes, seconds);
+				break;
+			default:
+				cerr << "Wrong Usage" << endl;
+				return EXIT_FAILURE;
+		}
+	}
 	SolarPositionCalculation spc(year, month, day);
 	double jday = spc.getJD();
 
@@ -36,5 +66,5 @@ int main(int argc, char *argv[]) {
 
 	cout << "Azimuth: "<< azel.getAzimuth() << ", Elevation: " << azel.getElevation() << endl;
 	
-	return 0;
+	return EXIT_SUCCESS;
 }
