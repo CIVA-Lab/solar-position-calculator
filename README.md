@@ -20,3 +20,7 @@ To calculate the **Azimuth** and **Elevation** values, the program requires 7 ar
 For example if you want to calculate the **Azimuth** and **Elevation** values in **2021 February 15**, at **11:37:52** (hh:mm:ss) at America/Chicago (approximately **Longititude: -98.583**, **Latitude: 39.833**, **UTC: -6:00**). Your initial arguments should be:
 
 `./solar-position-calculator -y 2021 -m 2 -d 15 -o -98.583 -a 39.833 -u -6:00 -t 11:37:52`
+
+To see view the help menu, run:
+
+`./solar-position-calculator --help`
