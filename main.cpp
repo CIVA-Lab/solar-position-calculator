@@ -4,6 +4,12 @@
 #include <ctype.h>
 
 int main(int argc, char *argv[])  {
+	
+	if(strcmp(argv[1],"--help") == 0) {
+		cout << "Usage: ./solar-position-calculator -y [Year] -m [Month] -d [Day] -o [Longtitude] -a [Latitude] -u [Time zone offset] -t [Time]\n";
+		cout << "Example Usage: ./solar-position-calculator -y 2021 -m 2 -d 15 -o -98.583 -a 39.833 -u -6:00 -t 11:37:52\n";
+		return EXIT_SUCCESS;
+	}
 
 	TimeLocation *tl = new TimeLocation();
 
