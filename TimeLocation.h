@@ -34,5 +34,5 @@ class TimeLocation {
 	bool isNumber(string inputVal);
 	double calcRefraction(double elev);
 	double calcTimeInMinutes(int hours, int mins, int secs);
-	AzimuthElevation* calcAzEl(double T, double localtime, double latitude, double longitude, double zone);
+	AzimuthElevation calcAzEl(double T, double localtime, double latitude, double longitude, double zone);
 };

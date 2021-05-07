@@ -69,9 +69,13 @@ int main(int argc, char *argv[])  {
 
 	double total = jday + (minutes/1444.0) - (tz_hour_d/24.0);
 	double T = spc.calcTimeJulianCent(total);
-	AzimuthElevation azel = *tl->calcAzEl(T, minutes, latitude, longtitude, tz_hour_d);
+	AzimuthElevation azel = tl->calcAzEl(T, minutes, latitude, longtitude, tz_hour_d);
 
 	cout << "Azimuth: "<< azel.getAzimuth() << ", Elevation: " << azel.getElevation() << endl;
 	
+
+	//delete &azel;
+	delete tl;
+
 	return EXIT_SUCCESS;
 }

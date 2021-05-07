@@ -20,7 +20,7 @@ double TimeLocation::calcSolNoon(double jd, double longitude, double timezone) {
 	while (solNoonLocal >= 1440.0) {
 		solNoonLocal -= 1440.0;
 	}
-
+	delete spc;
 	return solNoonLocal;
 }
 
@@ -35,7 +35,7 @@ double TimeLocation::calcSunriseSetUTC(bool rise, double JD, double latitude, do
 		hourAngle = -hourAngle;
 	double delta = longitude + radToDeg(hourAngle);
 	double timeUTC = 720 - (4.0 * delta) - eqTime;	// in minutes
-
+	delete spc;
 	return timeUTC;
 }
 
@@ -52,7 +52,7 @@ double TimeLocation::calcSunriseSet(bool rise, double JD, double latitude, doubl
 		double timeLocal = newTimeUTC + (timezone * 60.0);
 		double riseT = spc->calcTimeJulianCent(JD + newTimeUTC/1440.0);
 		
-		AzimuthElevation riseAzEl = *calcAzEl(riseT, timeLocal, latitude, longitude, timezone);
+		AzimuthElevation riseAzEl = calcAzEl(riseT, timeLocal, latitude, longitude, timezone);
 		
 		//double azimuth = riseAzEl.azimuth;
 		azimuth = riseAzEl.getAzimuth(); // See TODO #1
@@ -64,6 +64,7 @@ double TimeLocation::calcSunriseSet(bool rise, double JD, double latitude, doubl
 				jday -= increment;
 			}
 		}
+		//delete calcAzEl(riseT, timeLocal, latitude, longitude, timezone);
 
 	} else { // no sunrise/set found
 		
@@ -78,7 +79,7 @@ double TimeLocation::calcSunriseSet(bool rise, double JD, double latitude, doubl
 			jday = calcJDofNextPrevRiseSet(rise, rise, JD, latitude, longitude, timezone);
 		}
 	}
-
+	delete spc;
 	//return {"jday": jday, "timelocal": timeLocal, "azimuth": azimuth}
 	return 0.0;
 }
@@ -264,7 +265,7 @@ double TimeLocation::calcRefraction(double elev) {
 	return correction;
 }
 
-AzimuthElevation* TimeLocation::calcAzEl(double T, double localtime, double latitude, double longitude, double zone) {
+AzimuthElevation TimeLocation::calcAzEl(double T, double localtime, double latitude, double longitude, double zone) {
 
 	double eqTime = calcEquationOfTime(T);
 	double theta  = calcSunDeclination(T);
@@ -322,7 +323,7 @@ AzimuthElevation* TimeLocation::calcAzEl(double T, double localtime, double lati
 	double solarZen = zenith - refractionCorrection;
 	double elevation = 90.0 - solarZen;
 
-	AzimuthElevation *azimuth_elevation = new AzimuthElevation(azimuth, elevation);
+	AzimuthElevation azimuth_elevation(azimuth, elevation);
 
 	//cout << "Azimuth: " << azimuth << ", Elevation: " << elevation << endl;
 	return azimuth_elevation;
