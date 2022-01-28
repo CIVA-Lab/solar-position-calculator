@@ -24,3 +24,14 @@ For example if you want to calculate the **Azimuth** and **Elevation** values in
 To see view the help menu, run:
 
 `./solar-position-calculator --help`
+
+## Citing
+If you have used our work please cite us
+```tex
+@InProceedings{Ufuktepe_2021_ICCV,
+    author    = {Ufuktepe, Deniz Kavzak and Collins, Jaired and Ufuktepe, Ekincan and Fraser, Joshua and Krock, Timothy and Palaniappan, Kannappan},
+    title     = {Learning-Based Shadow Detection in Aerial Imagery Using Automatic Training Supervision From 3D Point Clouds},
+    booktitle = {Proceedings of the IEEE/CVF International Conference on Computer Vision Workshops (ICCVW), Workshop on Analysis of Aerial Motion Imagery (WAAMI)},
+    year      = {2021}
+}
+```
